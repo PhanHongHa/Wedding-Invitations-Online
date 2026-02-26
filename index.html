@@ -25,7 +25,13 @@
     font-family: 'Cormorant Garamond', serif;
     color: var(--cream);
     overflow-x: hidden;
-    cursor: none;
+  }
+
+  /* Chỉ ẩn cursor hệ thống trên thiết bị có chuột */
+  @media (hover: hover) and (pointer: fine) {
+    body {
+      cursor: none;
+    }
   }
 
   /* Custom Cursor */
@@ -50,6 +56,17 @@
     transform: translate(-50%, -50%);
     transition: all 0.15s ease;
     opacity: 0.6;
+  }
+
+  /* Ép ẩn hẳn cursor custom trên mobile / thiết bị chạm */
+  @media (hover: none), (pointer: coarse), (max-width: 768px) {
+    .cursor,
+    .cursor-follower {
+      display: none !important;
+    }
+    body {
+      cursor: auto;
+    }
   }
 
   /* Particles */
@@ -806,19 +823,31 @@
     }, 500);
   });
 
-  // Custom cursor
+  // Custom cursor - chỉ bật trên thiết bị có chuột
   const cursor = document.getElementById('cursor');
   const follower = document.getElementById('cursorFollower');
   let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px'; });
-  function animateFollower() {
-    followerX += (mouseX - followerX) * 0.12;
-    followerY += (mouseY - followerY) * 0.12;
-    follower.style.left = followerX + 'px';
-    follower.style.top = followerY + 'px';
-    requestAnimationFrame(animateFollower);
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+    function animateFollower() {
+      followerX += (mouseX - followerX) * 0.12;
+      followerY += (mouseY - followerY) * 0.12;
+      follower.style.left = followerX + 'px';
+      follower.style.top = followerY + 'px';
+      requestAnimationFrame(animateFollower);
+    }
+    animateFollower();
+  } else {
+    // Mobile / thiết bị chạm: ẩn hẳn cursor custom
+    if (cursor) cursor.style.display = 'none';
+    if (follower) follower.style.display = 'none';
   }
-  animateFollower();
 
   // Particles
   const particleContainer = document.getElementById('particles');
