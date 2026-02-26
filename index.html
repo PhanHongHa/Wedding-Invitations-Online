@@ -25,11 +25,16 @@
     font-family: 'Cormorant Garamond', serif;
     color: var(--cream);
     overflow-x: hidden;
+  }
+
+  /* Chỉ ẩn cursor hệ thống và dùng cursor custom trên thiết bị có chuột */
+  body.custom-cursor-enabled {
     cursor: none;
   }
 
   /* Custom Cursor */
   .cursor {
+    display: none;
     width: 12px; height: 12px;
     background: var(--gold);
     border-radius: 50%;
@@ -41,6 +46,7 @@
     mix-blend-mode: screen;
   }
   .cursor-follower {
+    display: none;
     width: 36px; height: 36px;
     border: 1px solid var(--gold-light);
     border-radius: 50%;
@@ -50,6 +56,16 @@
     transform: translate(-50%, -50%);
     transition: all 0.15s ease;
     opacity: 0.6;
+  }
+  body.custom-cursor-enabled .cursor,
+  body.custom-cursor-enabled .cursor-follower {
+    display: block;
+  }
+
+  /* Ép tắt cursor custom trên thiết bị chạm (tránh lỗi/nháy) */
+  @media (hover: none), (pointer: coarse) {
+    .cursor, .cursor-follower { display: none !important; }
+    body.custom-cursor-enabled { cursor: auto; }
   }
 
   /* Particles */
@@ -101,7 +117,6 @@
     transition: transform 0.8s cubic-bezier(0.4,0,0.2,1);
     filter: drop-shadow(0 20px 60px rgba(201,168,76,0.3));
   }
-  .envelope:hover { transform: scale(1.03) translateY(-4px); }
 
   .env-body {
     width: 100%; height: 100%;
@@ -378,11 +393,6 @@
     border-radius: 2px;
     transition: all 0.3s;
   }
-  .count-item:hover {
-    background: rgba(201,168,76,0.15);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(201,168,76,0.2);
-  }
   .count-num {
     font-family: 'Playfair Display', serif;
     font-size: 28px; font-weight: 700;
@@ -436,8 +446,6 @@
     transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
     z-index: -1;
   }
-  .rsvp-btn:hover { color: var(--dark); }
-  .rsvp-btn:hover::before { transform: translateX(0); }
 
   /* Flowers decoration */
   .flowers-bg {
@@ -483,11 +491,6 @@
     position: relative;
     transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
   }
-  .gallery-item:hover {
-    border-color: var(--gold);
-    box-shadow: 0 0 30px rgba(201,168,76,0.2);
-    transform: scale(1.03);
-  }
   .gallery-item::after {
     content: '';
     position: absolute; inset: 0;
@@ -521,18 +524,12 @@
     border-radius: 2px;
   }
   .schedule-item.animate-in { opacity: 1; transform: translateY(0); }
-  .schedule-item:hover {
-    background: rgba(201,168,76,0.1);
-    border-color: var(--gold);
-    box-shadow: 0 8px 32px rgba(201,168,76,0.15);
-  }
   .schedule-item::before {
     content: '';
     position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
     opacity: 0; transition: opacity 0.4s;
   }
-  .schedule-item:hover::before { opacity: 1; }
   .sch-icon { font-size: 32px; margin-bottom: 12px; display: block; }
   .sch-time {
     font-family: 'Playfair Display', serif;
@@ -579,11 +576,34 @@
     transition: all 0.3s;
     backdrop-filter: blur(10px);
   }
-  .music-btn:hover { background: rgba(201,168,76,0.3); transform: scale(1.1); }
   .music-btn.playing { animation: musicPulse 1.5s ease-in-out infinite; }
   @keyframes musicPulse {
     0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
     50% { box-shadow: 0 0 0 12px rgba(201,168,76,0); }
+  }
+
+  /* Hover effects - chỉ bật trên thiết bị có chuột */
+  @media (hover: hover) and (pointer: fine) {
+    .envelope:hover { transform: scale(1.03) translateY(-4px); }
+    .count-item:hover {
+      background: rgba(201,168,76,0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(201,168,76,0.2);
+    }
+    .rsvp-btn:hover { color: var(--dark); }
+    .rsvp-btn:hover::before { transform: translateX(0); }
+    .gallery-item:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 30px rgba(201,168,76,0.2);
+      transform: scale(1.03);
+    }
+    .schedule-item:hover {
+      background: rgba(201,168,76,0.1);
+      border-color: var(--gold);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.15);
+    }
+    .schedule-item:hover::before { opacity: 1; }
+    .music-btn:hover { background: rgba(201,168,76,0.3); transform: scale(1.1); }
   }
 
   /* scroll reveal */
@@ -654,7 +674,7 @@
     <div class="divider"><div class="divider-line"></div><div class="divider-center">❧</div><div class="divider-line"></div></div>
 
     <div class="names-section">
-      <span class="name-groom">Minh Khoa</span>
+      <span class="name-groom">Hồng Hà</span>
       <span class="and-symbol">&amp;</span>
       <span class="name-bride">Yến Nhi</span>
     </div>
@@ -747,7 +767,7 @@
 </section>
 
 <!-- Music button -->
-<div class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Nhạc nền">🎵</div>
+<div class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Nhạc nền">🔇</div>
 
 <audio id="bgMusic" loop preload="auto">
   <source src="music/nhac-nen.mp3" type="audio/mpeg">
@@ -783,19 +803,28 @@
     }, 500);
   });
 
-  // Custom cursor
+  // Custom cursor - chỉ bật trên thiết bị có hover & pointer chính xác (desktop, laptop)
   const cursor = document.getElementById('cursor');
   const follower = document.getElementById('cursorFollower');
   let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px'; });
-  function animateFollower() {
-    followerX += (mouseX - followerX) * 0.12;
-    followerY += (mouseY - followerY) * 0.12;
-    follower.style.left = followerX + 'px';
-    follower.style.top = followerY + 'px';
-    requestAnimationFrame(animateFollower);
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.body.classList.add('custom-cursor-enabled');
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+    function animateFollower() {
+      followerX += (mouseX - followerX) * 0.12;
+      followerY += (mouseY - followerY) * 0.12;
+      follower.style.left = followerX + 'px';
+      follower.style.top = followerY + 'px';
+      requestAnimationFrame(animateFollower);
+    }
+    animateFollower();
   }
-  animateFollower();
 
   // Particles
   const particleContainer = document.getElementById('particles');
@@ -834,7 +863,7 @@
         if (vol >= 0.6) clearInterval(fadeIn);
       }, 100);
       playing = true;
-      document.getElementById('musicBtn').textContent = '🔇';
+      document.getElementById('musicBtn').textContent = '🎵';
       document.getElementById('musicBtn').classList.add('playing');
     }).catch(() => {
       // Nếu vẫn bị chặn thì user có thể nhấn nút nhạc thủ công
