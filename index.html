@@ -27,22 +27,19 @@
     overflow-x: hidden;
   }
 
-  /* Chỉ ẩn cursor hệ thống trên thiết bị có chuột */
-  @media (hover: hover) and (pointer: fine) {
-    body {
-      cursor: none;
-    }
+  /* Custom Cursor - mặc định tắt, chỉ bật trên màn hình desktop */
+  .cursor,
+  .cursor-follower {
+    display: none;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
   }
-
-  /* Custom Cursor */
   .cursor {
     width: 12px; height: 12px;
     background: var(--gold);
     border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
     z-index: 9999;
-    transform: translate(-50%, -50%);
     transition: transform 0.1s ease;
     mix-blend-mode: screen;
   }
@@ -50,22 +47,19 @@
     width: 36px; height: 36px;
     border: 1px solid var(--gold-light);
     border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
     z-index: 9998;
-    transform: translate(-50%, -50%);
     transition: all 0.15s ease;
     opacity: 0.6;
   }
 
-  /* Ép ẩn hẳn cursor custom trên mobile / thiết bị chạm */
-  @media (hover: none), (pointer: coarse), (max-width: 768px) {
+  /* Chỉ bật cursor custom trên màn hình >= 1024px (desktop) */
+  @media (min-width: 1024px) {
+    body {
+      cursor: none;
+    }
     .cursor,
     .cursor-follower {
-      display: none !important;
-    }
-    body {
-      cursor: auto;
+      display: block;
     }
   }
 
@@ -787,7 +781,7 @@
 </section>
 
 <!-- Music button -->
-<div class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Nhạc nền">🎵</div>
+<div class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Nhạc nền">🔇</div>
 
 <audio id="bgMusic" loop preload="auto">
   <source src="music/nhac-nen.mp3" type="audio/mpeg">
@@ -823,12 +817,12 @@
     }, 500);
   });
 
-  // Custom cursor - chỉ bật trên thiết bị có chuột
+  // Custom cursor - chỉ bật trên màn hình desktop (>= 1024px)
   const cursor = document.getElementById('cursor');
   const follower = document.getElementById('cursorFollower');
   let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
 
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  if (window.innerWidth >= 1024) {
     document.addEventListener('mousemove', e => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -844,7 +838,7 @@
     }
     animateFollower();
   } else {
-    // Mobile / thiết bị chạm: ẩn hẳn cursor custom
+    // Mobile / tablet: ẩn hẳn cursor custom
     if (cursor) cursor.style.display = 'none';
     if (follower) follower.style.display = 'none';
   }
@@ -886,7 +880,7 @@
         if (vol >= 0.6) clearInterval(fadeIn);
       }, 100);
       playing = true;
-      document.getElementById('musicBtn').textContent = '🔇';
+      document.getElementById('musicBtn').textContent = '🎵';
       document.getElementById('musicBtn').classList.add('playing');
     }).catch(() => {
       // Nếu vẫn bị chặn thì user có thể nhấn nút nhạc thủ công
